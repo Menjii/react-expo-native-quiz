@@ -1,0 +1,23 @@
+[
+  {
+    "nick": "Marek",
+    "score": 18,
+    "total": 20,
+    "type": "historia",
+    "date": "2018-11-11"
+  },
+  {
+    "nick": "Bolas",
+    "score": 1,
+    "total": 20,
+    "type": "higiena",
+    "date": "2015-01-19"
+  },
+  {
+    "nick": "Wariacik",
+    "score": 20,
+    "total": 20,
+    "type": "Liczby parzyste niepodzielne przez 2",
+    "date": "2035-01-19"
+  }
+]
