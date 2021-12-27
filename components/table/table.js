@@ -5,13 +5,14 @@ import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 const Table = (props: any) => {
   return (
     <View>
-      {props.answers.map((elem: string, key: number) => {
+      {props.answers && props.answers.map((elem: string, key: number) => {
         return (
           <TouchableOpacity key={key} style={styles.container}>
             <TableRow
               checkAnswer={props.checkAnswer}
-              text={elem}
-              currentKey={key}
+              text={elem.content}
+              isCorrect={elem.isCorrect}
+              currentKey={elem}
               textStyle={styles.text}
               markedAnswer={props.markedAnswer}
             />
@@ -31,6 +32,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'black',
+    //fontFamily: 'Lato-Italic'
   },
 });
 

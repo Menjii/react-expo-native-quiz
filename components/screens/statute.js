@@ -4,10 +4,10 @@ import {
   Text,
   StyleSheet
 } from 'react-native';
-import RoundIconBtn from '../components/round-icon-btn';
+import RoundIconBtn from '../round-icon-btn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
-import StatuteJson from '../statute.json';
+import StatuteJson from '../../statute.json';
 
 const Statute = (props: any) => {
   const [isReaded, setIsReaded] = useState(false);

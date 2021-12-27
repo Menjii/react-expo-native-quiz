@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
+import { NavigationContainer } from '@react-navigation/native';
 
 const QuizCard = (props: any) => {
   
   return (
-    <TouchableOpacity style={styles.container} onPress={props.navigate}>
+    <TouchableOpacity style={styles.container} onPress={() => props.nav.navigate(('Quiz'), {id: props.id})} >
           <Card>
             <Text style={styles.paragraph}>
-              {props.title} / {props.number}
+              {props.title}
             </Text>
             <Text style={styles.text}>{props.content}</Text>
           </Card>

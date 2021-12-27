@@ -7,7 +7,7 @@ const PointsFooter = (props: any) => {
     <SafeAreaView style={styles.container}>
         <Card>
           <Text style={styles.paragraph}>Get to know your ranking result</Text>
-          <Pressable style={styles.button} onPress={props.navPoints}>
+          <Pressable style={styles.button} onPress={() => props.nav.navigate('Points')}>
             <Text style={styles.text}>Check!</Text>
           </Pressable>
         </Card>

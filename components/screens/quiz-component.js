@@ -1,17 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
-import questions from '../questions.json';
-import Question from './question';
-import Answers from './answers';
-import Results from './results';
-import Actions from './actions';
-import PopUp from './pop-up';
+import questions from '../../questions.json';
+import Question from '../question';
+import Answers from '../answers';
+import Results from '../results';
+import Actions from '../actions';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Modal from 'react-native-modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const QuizComponent = (props: any) => {
+const QuizComponent = ({props: any, navigation, route}) => {
+
+  const [quizData, changeData] = useState({});
+  const [userName, changeUserName] = useState("");
+
+  useEffect(() => {
+    retrieveData();
+    fetchData();
+  }, [route.params.id]);
+
+  const fetchData = async () => {
+    await fetch(`http://tgryl.pl/quiz/test/${route.params.id}`)
+      .then(response => response.json())
+      .then(resData => changeData(resData))
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+  const retrieveData = async () => {
+    try {
+      const user = await AsyncStorage.getItem('user');
+      if (user !== null) {
+        // We have data!!
+        console.log(user);
+        changeUserName(user);
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+
   const [currentIndex, setIndex] = useState(0);
-  const [currentQuestion, setQuestion] = useState(questions[currentIndex]);
+  const [currentQuestion, setQuestion] = useState(0);
   const [currentPoints, setPoints] = useState(0);
   const [allowToChoose, changePermission] = useState(true);
   const [markedAnswer, markAnswer] = useState({
@@ -26,21 +57,38 @@ const QuizComponent = (props: any) => {
     setIsModalVisible(() => !isModalVisible)
     };
   
+  const postDataToApi = () => {
+    fetch('http://tgryl.pl/quiz/results', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nick: userName.toString(),
+        score: currentPoints.toString(),
+        total: quizData.tasks.length.toString(),
+        type: quizData.name.toString(),
+      })
+  });
+
+  }
   const goToName = () => {
     handleModal();
-    props.navigation.navigate({ name: 'Points' });
+    postDataToApi();
+    navigation.navigate('Points');
   }
 
   const handleNextQuestion = () => {
     const nextValue = currentIndex + 1;
 
-    if (nextValue > questions.length - 1) {
-      setIndex(questions.length - 1);
+    if (nextValue > quizData.tasks.length - 1) {
+      setIndex(quizData.tasks.length - 1);
       handleModal();
       return;
     }
     setIndex(nextValue);
-    setQuestion(questions[nextValue]);
+    setQuestion(quizData.tasks[nextValue]);
     changePermission(true);
     markAnswer({ key: -1, variant: '' });
   };
@@ -57,31 +105,32 @@ const QuizComponent = (props: any) => {
     markAnswer({ key: -1, variant: '' });
   };
 
-  const handleCheckAnswer = (chosenOption: string, key: number) => {
-    if (!allowToChoose) {
-      return;
-    }
-    if (currentQuestion.correct_answer === chosenOption) {
-      const points = currentPoints + 1;
-      setPoints(points);
-      changePermission(false);
-      markAnswer({ key, variant: styles.success });
-    } else {
-      changePermission(false);
-      markAnswer({ key, variant: styles.wrong });
+  const handleCheckAnswer = (chosenOption: string, isCorrect: boolean, key: number) => {
+    if(allowToChoose === true) {
+      console.log(isCorrect);
+      
+      if(isCorrect === true) {
+        const points = currentPoints + 1;
+        setPoints(points);
+        changePermission(false);
+        markAnswer({ key, variant: styles.success });
+      } else {
+        changePermission(false);
+        markAnswer({ key, variant: styles.wrong });
+      }
     }
   };
 
   return (
     <View>
       <Question
-        currentQuestion={currentQuestion.question}
+        currentQuestion={quizData.tasks && quizData.tasks[currentIndex].question}
         currentIndex={currentIndex + 1}
-        allQuestions={questions.length}
+        allQuestions={quizData.tasks && quizData.tasks.length}
         textStyle={styles.text}></Question>
       <Answers
         checkAnswer={handleCheckAnswer}
-        currentAnswers={currentQuestion.answers}
+        currentAnswers={quizData.tasks && quizData.tasks[currentIndex].answers}
         markedAnswer={markedAnswer}
       />
       <Results points={currentPoints} textStyle={styles.text} />
@@ -100,6 +149,7 @@ const QuizComponent = (props: any) => {
           </View>
         </Modal>
       </View>
+      
     </View>
   );
 };

@@ -6,7 +6,7 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import RoundIconBtn from '../components/round-icon-btn';
+import RoundIconBtn from '../round-icon-btn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 

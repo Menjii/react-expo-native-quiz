@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 const TableRow = (props: any) => {
   return (
     <Text style={props.textStyle}
-      onClick={() => props.checkAnswer(props.text, props.currentKey)}
+      onPress={() => props.checkAnswer(props.text, props.isCorrect, props.currentKey)}
       className={
         props.markedAnswer.key === props.currentKey
           ? props.markedAnswer.variant
