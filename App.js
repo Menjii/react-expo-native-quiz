@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { setJSExceptionHandler, setNativeExceptionHandler } from 'react-native-exception-handler';
+import NetInfo from "@react-native-community/netinfo";
 
 import QuizComponent from './components/screens/quiz-component';
 import Menu from './components/screens/menu';
@@ -34,15 +35,23 @@ setJSExceptionHandler((error, isFatal) => {
 
 export default class App extends Component<{}> {
 
-  makeRequest = () => {
-    fetch('asdf')
-    .then((res) => res.json())
-    .then(res=>{
-      alert(res);
-    })
-    .catch(error => {
-      handleError(error, false);
-    });
+  NetInfoSubscribtion = null;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      connection_status: false,
+    }
+  }
+
+  useEffect(() => {
+    this.NetInfoSubscribtion = NetInfo.addEventListener(
+      this._handleConnectivityChange,
+    );
+  });
+
+  _handleConnectivityChange = (state) => {
+    this.setState({ connection_status: state.isConnected })
   }
 
   render() {
