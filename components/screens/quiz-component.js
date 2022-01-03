@@ -58,21 +58,19 @@ const QuizComponent = ({props: any, navigation, route}) => {
     };
   
   const postDataToApi = () => {
+    const payload = {
+      nick: userName.toString(),
+      score: currentPoints,
+      total: quizData.tasks.length,
+      type: quizData.name,
+    }
+
     fetch('http://tgryl.pl/quiz/results', {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        nick: userName.toString(),
-        score: currentPoints.toString(),
-        total: quizData.tasks.length.toString(),
-        type: quizData.name.toString(),
-      })
-  });
-
+      body: JSON.stringify(payload),
+    });
   }
+  
   const goToName = () => {
     handleModal();
     postDataToApi();
